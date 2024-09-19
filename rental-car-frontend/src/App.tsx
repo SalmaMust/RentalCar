@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './Auth/login';
 import Signup from './Auth/signup';
@@ -14,9 +13,10 @@ import CarCollection from './pages/impressiveCollection';
 import { Sidebar } from 'lucide-react';
 import NotFound from './pages/notFound';
 import Clients from './pages/Client/clientList';
+import Voiture from './pages/Voiture/voiture';
 
 
-const App: React.FC = () => {
+const App = () => {
   return (
     <Router>
       <Routes>
@@ -34,6 +34,9 @@ const App: React.FC = () => {
         <Route path='/sidebar' element={<Sidebar/>}/>
         <Route path="*" element={<NotFound />} />
         <Route path="/clients" element={<Clients />} />
+        <Route path="/voitures" element={<Voiture />} />
+        
+
       </Routes>
     </Router>
   );

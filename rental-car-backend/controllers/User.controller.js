@@ -90,10 +90,10 @@ exports.deleteSingleUser = async (req, res) => {
 };
 exports.create = async (req, res) => {
   try {
-    const { Nom, Email, Mot_de_passe, telephone, adresse, status, role } = req.body;
+    const { Nom, Email, Mot_de_passe, telephone, adresse } = req.body;
 
     // Vérifier si tous les champs requis sont fournis
-    if (!Nom || !Email || !Mot_de_passe || !telephone || !adresse || !status) {
+    if (!Nom || !Email || !Mot_de_passe || !telephone || !adresse ) {
       return res.status(400).json({ errormessage: "Tous les champs sont obligatoires" });
     }
 
@@ -118,9 +118,9 @@ exports.create = async (req, res) => {
       Email,
       Mot_de_passe: hashedPassword,
       telephone,
-      adresse,
-      status,
-      role: role || "Client", // Si aucun rôle n'est spécifié, assigner "Client" par défaut
+      adresse
+      
+       // Si aucun rôle n'est spécifié, assigner "Client" par défaut
     });
 
     // Sauvegarder l'utilisateur dans la base de données

@@ -2,57 +2,53 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Form } from '@/components/ui/form';
+import Client from '@/types/client.type';
+import './clientListItems.css';
 
-
-
-const Clients: React.FC = () => {
-  const [clients, setClients] = useState<Client[]>([]);  
+const Clients = () => {
+  const [clients, setClients] = useState<Client[]>([]);
   const [form, setForm] = useState<Partial<Client>>({});
-  const [editing, setEditing] = useState<boolean>(false); 
-  
-  // Fetch clients when component mounts
+  const [editing, setEditing] = useState<boolean>(false);
+
   useEffect(() => {
     fetchClients();
   }, []);
 
-  // Handle input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm({
       ...form,
-      [name]: value
+      [name]: value,
     });
   };
 
-  // Fetch all clients (READ operation)
   const fetchClients = async () => {
     try {
-      const response = await axios.get<Client[]>('/api/clients'); 
+      // Fetch all clients from the server
+      const response = await axios.get<Client[]>('http://localhost:4000/user');
       setClients(response.data);
     } catch (error) {
       console.error('Error fetching clients', error);
     }
   };
 
-  // Add or update client (CREATE/UPDATE operation)
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       if (editing && form.id !== undefined) {
-        // Update client
-        await axios.put(`/api/clients/${form.id}`, form); 
+        // Use backticks for dynamic URL with client id
+        await axios.put(`http://localhost:4000/user/${form.id}`, form);
       } else {
-        // Add new client
-        await axios.post('/api/clients', form); 
+        // For adding a new client
+        await axios.post('http://localhost:4000/user', form);
       }
-      fetchClients();
+      fetchClients(); // Refresh the client list
       setForm({
-        nom: '',
-        email: '',
-        motDePasse: '',
+        Nom: '',
+        Email: '',
+        Mot_de_passe: '',
         telephone: '',
-        adresse: ''
+        adresse: '',
       });
       setEditing(false);
     } catch (error) {
@@ -60,17 +56,16 @@ const Clients: React.FC = () => {
     }
   };
 
-  // Edit client
   const handleEdit = (client: Client) => {
     setForm(client);
     setEditing(true);
   };
 
-  // Delete client (DELETE operation)
   const handleDelete = async (id: number) => {
     try {
-      await axios.delete(`/api/clients/${id}`); 
-      fetchClients();
+      // Dynamically insert the id into the URL
+      await axios.delete(`http://localhost:4000/user/${id}`);
+      fetchClients(); // Refresh the client list after deletion
     } catch (error) {
       console.error('Error deleting client', error);
     }
@@ -78,37 +73,37 @@ const Clients: React.FC = () => {
 
   return (
     <section className="py-6 px-4 ml-14 mr-14">
-    <div className="flex justify-between ">
-        <h2 className="text-xl font-semibold ml-9 mt-9" >Clients Management</h2>
-        </div>
-<br></br>
-      <Form onSubmit={handleSubmit} >
+      <div className="flex justify-between">
+        <h2 className="text-xl font-semibold ml-9 mt-9">Clients Management</h2>
+      </div>
+      <br />
+      <form className="form-inside" onSubmit={handleSubmit}>
         <Input
           type="text"
           name="nom"
           placeholder="Nom"
-          value={form.nom || ''}
+          value={form.Nom || ''}
           onChange={handleInputChange}
           required
-          style={{ marginBottom: '10px', width : '30%' }}
+          style={{ marginBottom: '10px', width: '30%' }}
         />
         <Input
           type="email"
           name="email"
           placeholder="Email"
-          value={form.email || ''}
+          value={form.Email || ''}
           onChange={handleInputChange}
           required
-          style={{ marginBottom: '10px' , width : '30%' }}
+          style={{ marginBottom: '10px', width: '30%' }}
         />
         <Input
           type="password"
           name="motDePasse"
           placeholder="Mot de Passe"
-          value={form.motDePasse || ''}
+          value={form.Mot_de_passe || ''}
           onChange={handleInputChange}
           required
-          style={{ marginBottom: '10px', width : '30%' }}
+          style={{ marginBottom: '10px', width: '30%' }}
         />
         <Input
           type="text"
@@ -117,7 +112,7 @@ const Clients: React.FC = () => {
           value={form.telephone || ''}
           onChange={handleInputChange}
           required
-          style={{ marginBottom: '10px', width : '30%' }}
+          style={{ marginBottom: '10px', width: '30%' }}
         />
         <Input
           type="text"
@@ -126,30 +121,30 @@ const Clients: React.FC = () => {
           value={form.adresse || ''}
           onChange={handleInputChange}
           required
-          style={{ marginBottom: '10px' , width : '30%'}}
+          style={{ marginBottom: '10px', width: '30%' }}
         />
         <Button type="submit" style={{ display: 'block', margin: '0 auto' }}>
           {editing ? 'Update' : 'Add'} Client
         </Button>
-      </Form>
-      
+      </form>
 
       <section className="py-6 px-4 ml-14 mr-14">
-    <div className="flex justify-between items-right ">
-        <h2 className="text-xl font-semibold ml-9 mt-9" >Clients List</h2>
+        <div className="flex justify-between items-right">
+          <h2 className="text-xl font-semibold ml-9 mt-9">Clients List</h2>
         </div>
-      <ul>
-        {Array.isArray(clients) && clients.map((client) => (
-          <li key={client.id}>
-            {client.nom} - {client.email} - {client.telephone} - {client.adresse}
-            <Button onClick={() => handleEdit(client)}>Edit</Button>
-            <Button onClick={() => handleDelete(client.id)}>Delete</Button>
-            </li>
-          ))}
-          </ul>
-         </section>
-          </section>
-          );
-        };
+        <ul>
+          {Array.isArray(clients) &&
+            clients.map((client) => (
+              <li key={client.id}>
+                {client.Nom} - {client.Email} - {client.telephone} - {client.adresse}
+                <Button onClick={() => handleEdit(client)}>Edit</Button>
+                <Button onClick={() => handleDelete(client.id!)}>Delete</Button>
+              </li>
+            ))}
+        </ul>
+      </section>
+    </section>
+  );
+};
 
 export default Clients;

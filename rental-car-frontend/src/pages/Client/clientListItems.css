@@ -1,0 +1,20 @@
+.clientListItems .container {
+    max-width: unset;
+  }
+  .clientListItems .container {
+    width: 90%;
+    margin: auto;
+    max-width: 700px;
+    text-align: center;
+  }
+  .clientListItems .form-inside {
+    max-width: 400px;
+    margin: auto;
+    text-align: left;
+    background: #fff;
+    padding: 30px;
+    box-shadow:
+      2px 2px 11px 1px #ccc,
+      -2px -2px 16px 1px #ccc;
+    border-radius: 10px;
+  }
