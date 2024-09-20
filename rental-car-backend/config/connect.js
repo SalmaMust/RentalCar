@@ -1,8 +1,10 @@
 const mongoose = require("mongoose");
 //localhoost
 mongoose
-  .connect("mongodb://localhost:27017/LocationVoitureBD", {
-  })
+  .mongoose.connect("mongodb://127.0.0.1:27017/LocationVoitureBD", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+})
   //connexion
   .then(() => {
     console.log("connected");

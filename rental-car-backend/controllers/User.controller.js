@@ -49,7 +49,6 @@ exports.updateSingleUser = async (req, res) => {
         telephone,
         Mot_de_passe,
         adresse,
-        status,
         role,
       },
       { new: true }

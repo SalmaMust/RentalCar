@@ -3,7 +3,6 @@ import axios from 'axios';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import Client from '@/types/client.type';
-import './clientListItems.css';
 
 const Clients = () => {
   const [clients, setClients] = useState<Client[]>([]);
@@ -16,10 +15,11 @@ const Clients = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setForm({
-      ...form,
+    console.log(name, value);  // Log name and value to ensure it's being called
+    setForm((prevForm) => ({
+      ...prevForm,
       [name]: value,
-    });
+    }));
   };
 
   const fetchClients = async () => {
@@ -72,20 +72,21 @@ const Clients = () => {
   };
 
   return (
-    <section className="py-6 px-4 ml-14 mr-14">
-      <div className="flex justify-between">
+    <div className="flex justify-center items-center h-screen">
+    <div className="bg-background p-8 rounded-lg shadow-lg w-full max-w-md">
+      <div>
         <h2 className="text-xl font-semibold ml-9 mt-9">Clients Management</h2>
       </div>
       <br />
-      <form className="form-inside" onSubmit={handleSubmit}>
+      <form className="col-12 col-lg-4" onSubmit={handleSubmit}>
         <Input
           type="text"
           name="nom"
           placeholder="Nom"
-          value={form.Nom || ''}
-          onChange={handleInputChange}
+          value={form.Nom || ''}  // Make sure value is tied to state
+          onChange={handleInputChange} 
           required
-          style={{ marginBottom: '10px', width: '30%' }}
+          style={{ marginBottom: '10px' }}
         />
         <Input
           type="email"
@@ -94,7 +95,7 @@ const Clients = () => {
           value={form.Email || ''}
           onChange={handleInputChange}
           required
-          style={{ marginBottom: '10px', width: '30%' }}
+          style={{ marginBottom: '10px'}}
         />
         <Input
           type="password"
@@ -103,7 +104,7 @@ const Clients = () => {
           value={form.Mot_de_passe || ''}
           onChange={handleInputChange}
           required
-          style={{ marginBottom: '10px', width: '30%' }}
+          style={{ marginBottom: '10px'}}
         />
         <Input
           type="text"
@@ -112,7 +113,7 @@ const Clients = () => {
           value={form.telephone || ''}
           onChange={handleInputChange}
           required
-          style={{ marginBottom: '10px', width: '30%' }}
+          style={{ marginBottom: '10px' }}
         />
         <Input
           type="text"
@@ -121,9 +122,9 @@ const Clients = () => {
           value={form.adresse || ''}
           onChange={handleInputChange}
           required
-          style={{ marginBottom: '10px', width: '30%' }}
+          style={{ marginBottom: '30px'}}
         />
-        <Button type="submit" style={{ display: 'block', margin: '0 auto' }}>
+        <Button type="submit" className="w-[3cm] mx-auto" style={{ display: 'block', margin: '0 auto',}}>
           {editing ? 'Update' : 'Add'} Client
         </Button>
       </form>
@@ -143,7 +144,8 @@ const Clients = () => {
             ))}
         </ul>
       </section>
-    </section>
+    </div>
+    </div>
   );
 };
 

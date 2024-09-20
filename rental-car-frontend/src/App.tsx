@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './Auth/login';
-import Signup from './Auth/signup';
 import Footer from './components/global/footer';
 import Testimonials from './pages/testimonials';
 import Landingpage from './pages/landingpage';
@@ -14,6 +13,9 @@ import { Sidebar } from 'lucide-react';
 import NotFound from './pages/notFound';
 import Clients from './pages/Client/clientList';
 import Voiture from './pages/Voiture/voiture';
+import Register from './Auth/signup';
+import Admindashboard from './pages/Admin-dashboard';
+import Clientdashboard from './pages/client-dashboard';
 
 
 const App = () => {
@@ -21,7 +23,7 @@ const App = () => {
     <Router>
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/footer" element={<Footer/>} />
         <Route path="/testimonials" element={<Testimonials />} />
         <Route path="/landingpage" element={<Landingpage/>} />
@@ -35,7 +37,9 @@ const App = () => {
         <Route path="*" element={<NotFound />} />
         <Route path="/clients" element={<Clients />} />
         <Route path="/voitures" element={<Voiture />} />
-        
+        <Route path="/adminDashboard" element={<Admindashboard />} />
+        <Route path="/clientDashboard" element={<Clientdashboard />} />
+
 
       </Routes>
     </Router>

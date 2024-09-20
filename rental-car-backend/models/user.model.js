@@ -38,14 +38,7 @@ adresse: {
   trim: true,
  
 },
-status: {
-  type: String,
-  required: [true, 'Le champ status  est requis. Merci de le compléter.'],
-  enum :['Client','Client Fidele'],
-  default:"Client",
-  trim: true,
- 
-},
+
 
 
 role: {
