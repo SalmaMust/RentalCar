@@ -1,152 +1,135 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import Client from '@/types/client.type';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+interface Client {
+  _id: string;
+  Nom: string;
+  Email: string;
+  telephone: number;
+  adresse: string;
+  role: string;
+}
 
-const Clients = () => {
-  const [clients, setClients] = useState<Client[]>([]);
-  const [form, setForm] = useState<Partial<Client>>({});
-  const [editing, setEditing] = useState<boolean>(false);
+const ClientList = () => {
+  const [clients, setClients] = useState<Client[]>([]);  
+  const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
+    const fetchClients = async () => {
+      try {
+        const token = localStorage.getItem("authToken");
+        const response = await axios.get("http://localhost:4000/user/", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setClients(response.data.data); 
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          setErrorMessage(error.response?.data?.errormessage || "Erreur lors de l'ajout du client");
+        } else {
+          setErrorMessage("Une erreur inconnue s'est produite");
+        }
+      }
+    };
+
     fetchClients();
   }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    console.log(name, value);  // Log name and value to ensure it's being called
-    setForm((prevForm) => ({
-      ...prevForm,
-      [name]: value,
-    }));
-  };
-
-  const fetchClients = async () => {
+  const deleteClient = async (id: string) => {
     try {
-      // Fetch all clients from the server
-      const response = await axios.get<Client[]>('http://localhost:4000/user');
-      setClients(response.data);
-    } catch (error) {
-      console.error('Error fetching clients', error);
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      if (editing && form.id !== undefined) {
-        // Use backticks for dynamic URL with client id
-        await axios.put(`http://localhost:4000/user/${form.id}`, form);
-      } else {
-        // For adding a new client
-        await axios.post('http://localhost:4000/user', form);
-      }
-      fetchClients(); // Refresh the client list
-      setForm({
-        Nom: '',
-        Email: '',
-        Mot_de_passe: '',
-        telephone: '',
-        adresse: '',
+      const token = localStorage.getItem("authToken");
+      await axios.delete(`http://localhost:4000/user/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
-      setEditing(false);
-    } catch (error) {
-      console.error('Error saving client', error);
+      setClients(clients.filter((client) => client._id !== id));  
+    } catch {
+      setErrorMessage("Erreur lors de la suppression du client");
     }
   };
 
-  const handleEdit = (client: Client) => {
-    setForm(client);
-    setEditing(true);
+  const editClient = (id: string) => {
+    navigate(`/editClient/${id}`);
   };
 
-  const handleDelete = async (id: number) => {
-    try {
-      // Dynamically insert the id into the URL
-      await axios.delete(`http://localhost:4000/user/${id}`);
-      fetchClients(); // Refresh the client list after deletion
-    } catch (error) {
-      console.error('Error deleting client', error);
-    }
+  const addClient = () => {
+    navigate("/addClient");
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
-    <div className="bg-background p-8 rounded-lg shadow-lg w-full max-w-md">
-      <div>
-        <h2 className="text-xl font-semibold ml-9 mt-9">Clients Management</h2>
+    
+    <div>
+      <h2 className="text-center text-xl font-semibold mt-6">Clients List</h2>
+      {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+      <div className="row">
+        <Button className="btn btn-primary " onClick={addClient}>
+          Add Client
+        </Button>
       </div>
       <br />
-      <form className="col-12 col-lg-4" onSubmit={handleSubmit}>
-        <Input
-          type="text"
-          name="nom"
-          placeholder="Nom"
-          value={form.Nom || ''}  // Make sure value is tied to state
-          onChange={handleInputChange} 
-          required
-          style={{ marginBottom: '10px' }}
-        />
-        <Input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={form.Email || ''}
-          onChange={handleInputChange}
-          required
-          style={{ marginBottom: '10px'}}
-        />
-        <Input
-          type="password"
-          name="motDePasse"
-          placeholder="Mot de Passe"
-          value={form.Mot_de_passe || ''}
-          onChange={handleInputChange}
-          required
-          style={{ marginBottom: '10px'}}
-        />
-        <Input
-          type="text"
-          name="telephone"
-          placeholder="Telephone"
-          value={form.telephone || ''}
-          onChange={handleInputChange}
-          required
-          style={{ marginBottom: '10px' }}
-        />
-        <Input
-          type="text"
-          name="adresse"
-          placeholder="Adresse"
-          value={form.adresse || ''}
-          onChange={handleInputChange}
-          required
-          style={{ marginBottom: '30px'}}
-        />
-        <Button type="submit" className="w-[3cm] mx-auto" style={{ display: 'block', margin: '0 auto',}}>
-          {editing ? 'Update' : 'Add'} Client
-        </Button>
-      </form>
+      <div className="row">
+      <Table>
+  <TableHeader>
+    <TableRow>
+      <TableHead className="w-[100px]">Nom</TableHead>
+      <TableHead>Email</TableHead>
+      <TableHead>Téléphone</TableHead>
+      <TableHead className="text-right">Adresse</TableHead>
+      <TableHead className="text-right">Role</TableHead>
+      <TableHead className="text-center">Actions</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    {clients.length > 0 ? (
+      clients.map((user) => (
+    <TableRow key={user._id}>
+      <TableCell className="font-medium">{user.Nom}</TableCell>
+      <TableCell>{user.Email}</TableCell>
+      <TableCell>{user.telephone}</TableCell>
+      <TableCell className="text-right">{user.adresse}</TableCell>
+      <TableCell className="text-right">{user.role}</TableCell>
+      <TableCell className="text-right" ><Button onClick={() => editClient(user._id)} className="btn btn-primary">
+                      Update
+                    </Button>
+                    <Button
+                      style={{ marginLeft: "10px" }}
+                      onClick={() => deleteClient(user._id)}
+                      className="btn btn-danger"
+                    >
+                      Delete
+                    </Button>
+                    
+                    </TableCell>
 
-      <section className="py-6 px-4 ml-14 mr-14">
-        <div className="flex justify-between items-right">
-          <h2 className="text-xl font-semibold ml-9 mt-9">Clients List</h2>
-        </div>
-        <ul>
-          {Array.isArray(clients) &&
-            clients.map((client) => (
-              <li key={client.id}>
-                {client.Nom} - {client.Email} - {client.telephone} - {client.adresse}
-                <Button onClick={() => handleEdit(client)}>Edit</Button>
-                <Button onClick={() => handleDelete(client.id!)}>Delete</Button>
-              </li>
-            ))}
-        </ul>
-      </section>
+    </TableRow>
+     ))
+    ) : (
+      <TableRow>
+              <TableCell  colSpan={5} className="text-center">Aucun client trouvé</TableCell>
+              </TableRow>
+)}
+  </TableBody>
+</Table>            
+                 
+             
+              
+        
+      </div>
     </div>
-    </div>
+    
   );
 };
 
-export default Clients;
+export default ClientList;

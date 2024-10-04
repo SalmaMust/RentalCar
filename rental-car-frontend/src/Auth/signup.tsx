@@ -53,9 +53,9 @@ const Register = () => {
       {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
       {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
       <div className="flex justify-center items-center h-screen">
-        <div className="bg-background p-8 rounded-lg shadow-lg w-full max-w-md">
+        <div className="bg-background p-9 rounded-lg shadow-lg w-full max-w-md">
           <h2 className="text-2xl font-bold mb-1">Sign Up</h2>
-          <form className="space-y-4" onSubmit={handleSubmit}>
+          <form  onSubmit={handleSubmit}>
             <Label htmlFor="name">Name</Label>
             <Input
               type="text"
@@ -102,18 +102,7 @@ const Register = () => {
               required
             />
             
-            <Label htmlFor="role">Role</Label>
-            <select
-              name="role"
-              value={form.role}
-              onChange={handleInputChange}
-              className="border rounded p-2 w-full"
-              required
-            >
-              <option value="Client">Client</option>
-              <option value="Admin">Admin</option>
-            </select>
-
+           
             <div className="mt-3 text-center">
               <Button className="w-[3cm] mx-auto" type="submit">Register</Button>
             </div>
