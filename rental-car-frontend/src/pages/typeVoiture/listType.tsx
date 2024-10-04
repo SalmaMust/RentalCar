@@ -31,7 +31,9 @@ const ListType = () => {
     };
 
     fetchTypes();
-  }, []);
+    const {loading ,error , data , refetch }=useQuery(["types",token ],fetchTypes)
+    refetch()
+}, []);
 
   const handleDelete = async (id: string) => {
     const token = localStorage.getItem("authToken");
@@ -50,6 +52,8 @@ const ListType = () => {
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Liste des Types</h1>
+      <Button onClick={() => navigate(`/addType`)}>Ajouter</Button>
+
       {errorMessage && <p className="text-red-500">{errorMessage}</p>}
       <table className="w-full text-left table-auto">
         <thead>
