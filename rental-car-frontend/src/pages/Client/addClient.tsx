@@ -1,9 +1,18 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Label } from "@radix-ui/react-label";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useNavigate } from "react-router-dom";
 
 const AddClient = () => {
   const [form, setForm] = useState({
@@ -14,8 +23,8 @@ const AddClient = () => {
     adresse: "",
   });
   const [errorMessage, setErrorMessage] = useState("");
-  const navigate = useNavigate();
   const [role, setRole] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const userRole = localStorage.getItem("userRole");
@@ -34,7 +43,7 @@ const AddClient = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("authToken");
-  
+
       await axios.post(
         "http://localhost:4000/user/",
         form,
@@ -43,9 +52,11 @@ const AddClient = () => {
             Authorization: `Bearer ${token}`,
           },
         }
+        
       );
-  
-      navigate("/client-list"); 
+      window.location.reload(); 
+
+      navigate("/admin/clients"); 
     } catch (error) {
       if (axios.isAxiosError(error)) {
         setErrorMessage(error.response?.data?.errormessage || "Erreur lors de l'ajout du client");
@@ -62,79 +73,80 @@ const AddClient = () => {
   }
 
   return (
-    <div className="flex justify-center items-center h-screen">
-    <div className="bg-background p-8 rounded-lg shadow-lg w-full max-w-md">
-      <div>
-        <h3 className="text-xl font-semibold" >
-          Ajouter client 
-          </h3>
-    <div>
-      {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
-      <form onSubmit={handleSubmit}>
-      <Label htmlFor="nom" className="block mb-3 mt-3 text-muted-foreground">
-                Nom
-              </Label>
-        <Input
-          type="text"
-          name="Nom"
-          placeholder="Nom"
-          value={form.Nom}
-          onChange={handleInputChange}
-          required
-        />
-        <Label htmlFor="email" className="block mb-3 mt-3 text-muted-foreground">
-                Email
-              </Label>
-        <Input
-          type="email"
-          name="Email"
-          placeholder="Email"
-          value={form.Email}
-          onChange={handleInputChange}
-          required
-        />
-        <Label htmlFor="Mot de passe" className="block mb-3 mt-3 text-muted-foreground">
-                Mot de passe
-              </Label>
-        <Input
-          type="password"
-          name="Mot_de_passe"
-          placeholder="Mot de Passe"
-          value={form.Mot_de_passe}
-          onChange={handleInputChange}
-          required
-        />
-        <Label htmlFor="telephone" className="block mb-3 mt-3 text-muted-foreground">
-                Telephone
-              </Label>
-        <Input
-          type="text"
-          name="telephone"
-          placeholder="Téléphone"
-          value={form.telephone}
-          onChange={handleInputChange}
-          required
-        />
-        <Label htmlFor="adresse" className="block mb-3 mt-3 text-muted-foreground">
-                Adresse
-              </Label>
-        <Input
-        
-          type="text"
-          name="adresse"
-          placeholder="Adresse"
-          value={form.adresse}
-          onChange={handleInputChange}
-          required
-        /> 
-        <div className="mt-6 text-center">
-        <Button className="w-[3cm] mx-auto mb-5"  type="submit">Add Client</Button>
-        </div>
-      </form>
-    </div>
-    </div>
-    </div>
-    </div>
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline">Ajouter un Client</Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Ajouter Client</DialogTitle>
+          <DialogDescription>Remplissez les informations pour ajouter un nouveau client.</DialogDescription>
+        </DialogHeader>
+        {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+        <form onSubmit={handleSubmit}>
+          <Label htmlFor="nom" className="block mb-3 mt-3 text-muted-foreground">
+            Nom
+          </Label>
+          <Input
+            type="text"
+            name="Nom"
+            placeholder="Nom"
+            value={form.Nom}
+            onChange={handleInputChange}
+            required
+          />
+          <Label htmlFor="email" className="block mb-3 mt-3 text-muted-foreground">
+            Email
+          </Label>
+          <Input
+            type="email"
+            name="Email"
+            placeholder="Email"
+            value={form.Email}
+            onChange={handleInputChange}
+            required
+          />
+          <Label htmlFor="Mot_de_passe" className="block mb-3 mt-3 text-muted-foreground">
+            Mot de passe
+          </Label>
+          <Input
+            type="password"
+            name="Mot_de_passe"
+            placeholder="Mot de Passe"
+            value={form.Mot_de_passe}
+            onChange={handleInputChange}
+            required
+          />
+          <Label htmlFor="telephone" className="block mb-3 mt-3 text-muted-foreground">
+            Telephone
+          </Label>
+          <Input
+            type="text"
+            name="telephone"
+            placeholder="Téléphone"
+            value={form.telephone}
+            onChange={handleInputChange}
+            required
+          />
+          <Label htmlFor="adresse" className="block mb-3 mt-3 text-muted-foreground">
+            Adresse
+          </Label>
+          <Input
+            type="text"
+            name="adresse"
+            placeholder="Adresse"
+            value={form.adresse}
+            onChange={handleInputChange}
+            required
+          />
+          <DialogFooter className="sm:justify-start mt-4">
+            <DialogTrigger asChild>
+            <Button  variant="secondary" type="submit">Ajouter</Button>
+            </DialogTrigger>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 };
 

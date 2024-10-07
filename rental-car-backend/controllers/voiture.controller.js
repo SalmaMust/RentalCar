@@ -5,7 +5,7 @@ const typeSchema = require("../models/type.model");
 require("dotenv").config();
 exports.createNewVoiture = async (req, res) => {
     const {
-        matricuel,
+        matricule,
       name,
       model,
       type,
@@ -20,7 +20,7 @@ exports.createNewVoiture = async (req, res) => {
   
     // Vérification des champs obligatoires
     if (
-        !matricuel||
+        !matricule||
       !name ||
       !model ||
       !type ||
@@ -50,7 +50,7 @@ exports.createNewVoiture = async (req, res) => {
   
       // Création de la voiture
       const response = await voitureSchema.create({
-        matricuel,
+        matricule,
         name,
         model,
         type,
@@ -124,7 +124,7 @@ exports.getVoitureById = async (req, res) => {
 exports.updatevoitureById = async (req, res) => {
   const { id } = req.params; // Récupérer l'ID de la requête
   const {
-    matricuel: matricuel,
+    matricule: matricule,
     name: name,
     model: model,
     type: type,
@@ -141,7 +141,7 @@ exports.updatevoitureById = async (req, res) => {
     const updatevoitureById = await voitureSchema.findByIdAndUpdate(
       id, // ID de voiture à mettre à jour
       {
-        matricuel: matricuel,
+        matricuel: matricule,
         name: name,
         model: model,
         type: type,

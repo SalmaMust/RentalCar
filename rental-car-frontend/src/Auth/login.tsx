@@ -32,9 +32,9 @@ const Login = () => {
 
       
       if (user.role === "Client") {
-        navigate("/clientDashboard");
+        navigate("/client/home");
       } else if (user.role === "Admin") {
-        navigate("/adminDashboard");
+        navigate("/admin/home");
       } else {
         setErrorMessage("Role not recognized.");
       }

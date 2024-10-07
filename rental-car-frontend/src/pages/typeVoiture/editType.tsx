@@ -1,19 +1,31 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams, useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Label } from "@radix-ui/react-label";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
-const EditType = () => {
-  const { id } = useParams<{ id: string }>();
+interface EditTypeDialogProps {
+  id: string;
+}
+
+const EditTypeDialog = ({ id }: EditTypeDialogProps) => {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    image: null,
+    image: null as File | null,
+    imageUrl: "" // Add this to track the existing image URL
   });
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchType = async () => {
@@ -24,9 +36,10 @@ const EditType = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        const { name, description } = response.data.data;
-        setFormData({ name, description, image: null });
-      } catch  {
+        const { name, description, image } = response.data.data;
+
+        setFormData({ name, description, image: null, imageUrl: image }); 
+      } catch {
         setErrorMessage("Erreur lors de la récupération du type");
       }
     };
@@ -43,13 +56,11 @@ const EditType = () => {
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setFormData({
-        ...formData,
-        image: file,
-      });
-    }
+    const file = e.target.files?.[0] || null;
+    setFormData({
+      ...formData,
+      image: file,
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -60,6 +71,7 @@ const EditType = () => {
     const data = new FormData();
     data.append("name", formData.name);
     data.append("description", formData.description);
+
     if (formData.image) {
       data.append("image", formData.image);
     }
@@ -71,16 +83,22 @@ const EditType = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-      navigate("/listType");
-    } catch  {
+      window.location.reload(); 
+    } catch {
       setErrorMessage("Erreur lors de la mise à jour du type");
     }
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="bg-background p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h3 className="text-xl font-semibold">Modifier Type</h3>
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline">Modifier Type</Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Modifier Type</DialogTitle>
+          <DialogDescription>Mettez à jour les informations du type.</DialogDescription>
+        </DialogHeader>
         {errorMessage && <p className="text-red-500">{errorMessage}</p>}
         <form onSubmit={handleSubmit} encType="multipart/form-data" className="grid grid-cols-1 gap-4">
           <div>
@@ -97,7 +115,7 @@ const EditType = () => {
 
           <div>
             <Label htmlFor="description" className="block mb-2">Description</Label>
-            <textarea
+            <Textarea
               name="description"
               placeholder="Description du type"
               value={formData.description}
@@ -109,6 +127,11 @@ const EditType = () => {
 
           <div>
             <Label htmlFor="image" className="block mb-2">Image</Label>
+
+            {formData.imageUrl && (
+              <img src={`http://localhost:4000/${formData.imageUrl}`} alt="Current Type" className="w-32 h-32 object-cover mb-4" />
+            )}
+
             <Input
               type="file"
               name="image"
@@ -117,11 +140,13 @@ const EditType = () => {
             />
           </div>
 
-          <Button type="submit" className="w-full">Modifier Type</Button>
+          <DialogFooter>
+            <Button type="submit" className="w-full">Modifier Type</Button>
+          </DialogFooter>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 
-export default EditType;
+export default EditTypeDialog;

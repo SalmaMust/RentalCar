@@ -18,6 +18,9 @@ router.get("/:id",
     authMiddleware.verifyToken, 
     userController.getSingleUser);
 
+   
+
+
 router.post(
   "/",
   userController.create

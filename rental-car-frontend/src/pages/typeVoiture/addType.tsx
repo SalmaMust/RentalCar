@@ -1,19 +1,27 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { Input } from "@/components/ui/input"; // Custom Input Component (optional)
-import { Button } from "@/components/ui/button"; // Custom Button Component (optional)
-import { Label } from "@radix-ui/react-label"; // Custom Label Component (optional)
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
-const AddType = () => {
+
+
+const AddTypeDialog = () => {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    image: null,
-  });
+    image: null as File | null,  });
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const navigate = useNavigate();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -49,10 +57,10 @@ const AddType = () => {
       await axios.post("http://localhost:4000/type/", data, {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data", // For image upload
+          "Content-Type": "multipart/form-data",
         },
       });
-      navigate("/listType");
+      window.location.reload(); 
     } catch (error) {
       if (axios.isAxiosError(error)) {
         setErrorMessage(error.response?.data?.errormessage || "Erreur lors de l'ajout du type");
@@ -63,9 +71,15 @@ const AddType = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="bg-background p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h3 className="text-xl font-semibold">Ajouter Type</h3>
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline">Ajouter Type</Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Ajouter Type</DialogTitle>
+          <DialogDescription>Remplissez les informations pour ajouter un nouveau type.</DialogDescription>
+        </DialogHeader>
         {errorMessage && <p className="text-red-500">{errorMessage}</p>}
         <form onSubmit={handleSubmit} encType="multipart/form-data" className="grid grid-cols-1 gap-4">
           <div>
@@ -102,11 +116,15 @@ const AddType = () => {
             />
           </div>
 
-          <Button type="submit" className="w-full">Ajouter Type</Button>
+          <DialogFooter>
+            <DialogTrigger asChild>
+            <Button variant="secondary" type="submit" className="w-full">Ajouter Type</Button>
+            </DialogTrigger>
+          </DialogFooter>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 
-export default AddType;
+export default AddTypeDialog;
