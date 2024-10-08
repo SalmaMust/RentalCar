@@ -1,4 +1,4 @@
-import  { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import AddModele from "./addModele";
@@ -12,7 +12,7 @@ interface Model {
   brand: {
     _id: string;
     name: string;
-  }[];
+  };
 }
 
 const ListModele = () => {
@@ -29,7 +29,8 @@ const ListModele = () => {
           },
         });
         setModels(response.data.data);
-      } catch  {
+      } catch (error) {
+        console.error("Error fetching models:", error);
         setError("Erreur lors de la récupération des modèles.");
       }
     };
@@ -45,7 +46,7 @@ const ListModele = () => {
         },
       });
       setModels(models.filter((model) => model._id !== id));
-    } catch{
+    } catch {
       setError("Erreur lors de la suppression du modèle.");
     }
   };
@@ -53,37 +54,51 @@ const ListModele = () => {
   return (
     <div>
       <h2>Liste des Modèles</h2>
-      <AddModele/>
+      <AddModele />
       {error && <p>{error}</p>}
       <table>
         <thead>
           <tr>
             <th>Nom</th>
             <th>Description</th>
-            <th>Maison</th>
+            <th>Marques</th>
             <th>Image</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {models.map((model) => (
-            <tr key={model._id}>
-              <td>{model.name}</td>
-              <td>{model.description}</td>
-              <td>
-                {model.brand.map((brand) => (
-                  <div key={brand._id}>{brand.name}</div>
-                ))}
-              </td>
-              <td>
-                <img src={`http://localhost:4000/${model.image}`} alt={model.name} width="50" />
-              </td>
-              <td>
-                <Button onClick={() => handleDelete(model._id)}>Supprimer</Button>
-                <EditModele id={model._id}  />
-              </td>
-            </tr>
-          ))}
+        {models.length > 0 ? (
+    models.map((model) => (
+      <tr key={model._id}>
+        <td>{model.name}</td>
+        <td>{model.description}</td>
+        
+          <td>{model.brand ? model.brand.name : "Aucune marque disponible"}</td>
+
+        <td>
+          {model.image ? (
+            <img
+              src={`http://localhost:4000/${model.image}`}
+              alt={model.name}
+              width="50"
+            />
+          ) : (
+            <p>Pas d'image disponible</p>
+          )}
+        </td>
+        <td>
+          <Button onClick={() => handleDelete(model._id)}>
+            Supprimer
+          </Button>
+          <EditModele id={model._id} />
+        </td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan={5}>Aucun modèle disponible</td>
+    </tr>
+  )}
         </tbody>
       </table>
     </div>

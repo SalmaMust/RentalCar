@@ -10,7 +10,7 @@ exports.createNewVoiture = async (req, res) => {
       model,
       type,
     //   maison,
-      disoponibilité,
+      disponibilité,
       pricePerDay,
       visibility,
       deposit,
@@ -19,18 +19,7 @@ exports.createNewVoiture = async (req, res) => {
     } = req.body;
   
     // Vérification des champs obligatoires
-    if (
-        !matricule||
-      !name ||
-      !model ||
-      !type ||
-      !disoponibilité ||
-      !pricePerDay ||
-      !visibility ||
-       !deposit
-       ||!tax_fees 
-       || !min_days
-    ) {
+    if (!matricule || !name || !model || !type || !disponibilité || !pricePerDay || !deposit || !min_days) {
       return res.status(400).json({
         errormessage: "Tous les champs sont obligatoires",
       });
@@ -55,7 +44,7 @@ exports.createNewVoiture = async (req, res) => {
         model,
         type,
         // maison,
-        disoponibilité,
+        disponibilité,
         pricePerDay,
         visibility,
        deposit,
@@ -129,7 +118,7 @@ exports.updatevoitureById = async (req, res) => {
     model: model,
     type: type,
     // maison: maison,
-    disoponibilité: disoponibilité,
+    disponibilité: disoponibilité,
     pricePerDay: pricePerDay,
     visibility: visibility,
     deposit:deposit,
@@ -141,12 +130,12 @@ exports.updatevoitureById = async (req, res) => {
     const updatevoitureById = await voitureSchema.findByIdAndUpdate(
       id, // ID de voiture à mettre à jour
       {
-        matricuel: matricule,
+        matricule: matricule,
         name: name,
         model: model,
         type: type,
         // maison: maison,
-        disoponibilité: disoponibilité,
+        disponibilité: disoponibilité,
         pricePerDay: pricePerDay,
         visibility: visibility,
         deposit:deposit,

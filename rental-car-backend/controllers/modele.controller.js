@@ -5,7 +5,7 @@ exports.createNewModele = async (req, res) => {
   const {
     name,
     description,
-    maison
+    brand
   
   } = req.body;
   const image = req.file ? req.file.path : ''; // Récupérer le chemin de l'image si elle existe
@@ -26,7 +26,7 @@ exports.createNewModele = async (req, res) => {
       name: name,
       description: description,
       image: image,
-      maison: maison // Ajoutez le champ maison ici
+      brand: brand // Ajoutez le champ maison ici
 
      
     });
@@ -43,7 +43,7 @@ exports.createNewModele = async (req, res) => {
 
 exports.getAllModels = async (req, res) => {
   try {
-    const response = await modelSchema.find().populate('maison'); ;
+    const response = await modelSchema.find().populate('brand'); ;
     return res.status(200).json({
       successmessage: "Models ont été récupérés avec succès",
       data: response,
@@ -56,7 +56,7 @@ exports.getAllModels = async (req, res) => {
 };
 exports.getModelById = async (req, res) => {
   const { id } = req.params;
-  const FoundModel = await modelSchema.findById(id).populate('maison'); ;
+  const FoundModel = await modelSchema.findById(id).populate('brand'); ;
   if (!FoundModel)
     return res.status(404).json({ errormessage: " Model introuvable" });
 
@@ -77,7 +77,7 @@ exports.updateModelById = async (req, res) => {
   const {
     name: name,
     description: description,
-    maison : maison
+    brand : brand
   } = req.body;
   const image = req.file ? req.file.path : null;
   // Nouvelles données de voiture
@@ -89,7 +89,7 @@ exports.updateModelById = async (req, res) => {
         name: name,
         description: description,
         image: image,
-        maison: maison
+        brand: brand
       },
       { new: true } // Pour obtenir le document mis à jour en réponse
     );

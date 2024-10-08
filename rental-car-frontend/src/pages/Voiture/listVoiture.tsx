@@ -1,38 +1,44 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import  { useState, useEffect } from "react";
+import axios from "axios";
+import { Button } from "@/components/ui/button";
+import AddVoiture from "./addVoiture";
+import EditVoiture from "./editVoiture";
 
 interface Voiture {
-  _id?: string; 
+  _id: string;
   matricule: string;
   name: string;
-  model: string;
-  type: string;
-  disponibilite: string;
+  model: {
+    _id: string;
+    name: string;
+  };
+  type: {
+    _id: string;
+    name: string;
+  };
+  disponibilité: string;
   pricePerDay: number;
-  visibility: boolean;
   deposit: number;
-  tax_fees: number;
   min_days: number;
 }
 
 const ListVoiture = () => {
-  const [voitures, setVoitures] = useState<Voiture[]>([]);  
-  
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [voitures, setVoitures] = useState<Voiture[]>([]);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const fetchVoitures = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/car/', {
+        const token = localStorage.getItem("authToken");
+
+        const response = await axios.get("http://localhost:4000/car", {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("authToken")}`,  
+            Authorization: `Bearer ${token}`,
           },
         });
-        if (response.data && response.data.data) {
-          setVoitures(response.data.data);
-        }
-      } catch (error) {
-        console.error("Error fetching voitures:", error);
+
+        setVoitures(response.data.data || []);
+      } catch  {
         setErrorMessage("Erreur lors de la récupération des voitures.");
       }
     };
@@ -40,42 +46,44 @@ const ListVoiture = () => {
     fetchVoitures();
   }, []);
 
-
-  const handleDelete = async (id?: string) => {
-    if (!id) return; 
-    try {
-      await axios.delete(`http://localhost:4000/car/${id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("authToken")}`,  
-        },
-      });
-      setVoitures(voitures.filter(voiture => voiture._id !== id));
-    } catch (error) {
-      console.error("Error deleting voiture:", error);
-      setErrorMessage("Erreur lors de la suppression de la voiture.");
-    }
-  };
-
   return (
     <div>
-      <h2 className="text-center text-xl font-semibold mt-6"> Liste des voitures </h2>
-
-      {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
-      
-
       <h2>Liste des Voitures</h2>
-      <ul>
-        {voitures.length > 0 ? (
-          voitures.map((voiture) => (
-            <li key={voiture._id}>
-              {voiture.name} - {voiture.matricule}
-              <button onClick={() => handleDelete(voiture._id)}>Supprimer</button>
-            </li>
-          ))
-        ) : (
-          <p>Aucune voiture disponible.</p>
-        )}
-      </ul>
+      <AddVoiture/>
+      {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+      <table>
+        <thead>
+          <tr>
+            <th>Matricule</th>
+            <th>Nom</th>
+            <th>Modèle</th>
+            <th>Type</th>
+            <th>Disponibilité</th>
+            <th>Prix/Jour</th>
+            <th>Dépôt</th>
+            <th>Jours Min.</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {voitures.map((voiture) => (
+            <tr key={voiture._id}>
+              <td>{voiture.matricule}</td>
+              <td>{voiture.name}</td>
+              <td>{voiture.model?.name}</td>
+              <td>{voiture.type?.name}</td>
+              <td>{voiture.disponibilité}</td>
+              <td>{voiture.pricePerDay} €</td>
+              <td>{voiture.deposit} €</td>
+              <td>{voiture.min_days} jours</td>
+              <td>
+                <EditVoiture />
+                <Button variant="destructive">Supprimer</Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

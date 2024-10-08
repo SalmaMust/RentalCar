@@ -14,4 +14,4 @@ const maisonSchema = mongoose.Schema({
 
 });
 
-module.exports = mongoose.model('Maison', maisonSchema);
+module.exports = mongoose.model('Brand', maisonSchema);

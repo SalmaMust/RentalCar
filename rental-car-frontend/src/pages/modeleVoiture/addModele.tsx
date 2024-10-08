@@ -23,7 +23,7 @@ const AddModele= () => {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    brand: "", // Assuming single select, you can change this to an array for multi-select
+    brand: "",
     image: null as File | null,
   });
   const [brands, setBrands] = useState<Brand[]>([]);
@@ -33,7 +33,7 @@ const AddModele= () => {
     const fetchBrands = async () => {
       try {
         const token = localStorage.getItem("authToken");
-        const response = await axios.get("http://localhost:4000/brands", {
+        const response = await axios.get("http://localhost:4000/brand/", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -67,18 +67,23 @@ const AddModele= () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+  
     const token = localStorage.getItem("authToken");
-
+  
     const data = new FormData();
     data.append("name", formData.name);
     data.append("description", formData.description);
     data.append("brand", formData.brand);
-
+  
     if (formData.image) {
       data.append("image", formData.image);
     }
-
+  
+    // Log the form data for debugging
+    for (const [key, value] of data.entries()) {
+      console.log(key, value);
+    }
+  
     try {
       await axios.post(`http://localhost:4000/model/`, data, {
         headers: {
@@ -87,8 +92,12 @@ const AddModele= () => {
         },
       });
       window.location.reload();
-    } catch {
-      setErrorMessage("Erreur lors de l'ajout du modèle.");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("Error adding the model:", error.message);
+      } else {
+        console.error("An unknown error occurred");
+      }
     }
   };
 

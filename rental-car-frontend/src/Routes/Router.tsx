@@ -26,6 +26,7 @@ import EditModele from "@/pages/modeleVoiture/editModele";
 import AddModele from "@/pages/modeleVoiture/addModele";
 import ListModele from "@/pages/modeleVoiture/listModele";
 import ListMaison from "@/pages/maisonVoiture/listMaison";
+import EditVoiture from "@/pages/Voiture/editVoiture";
 
 export const router = createBrowserRouter([
   {
@@ -115,6 +116,10 @@ export const router = createBrowserRouter([
           {
             path: "voitures/addVoiture",
             element: <AddVoiture />
+          },
+          {
+            path: "voitures/editVoiture/:id",
+            element: <EditVoiture />
           }
         ]
       },
