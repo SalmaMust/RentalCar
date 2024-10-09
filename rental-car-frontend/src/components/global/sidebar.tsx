@@ -23,6 +23,11 @@ const SIDEBAR_ITEMS = [
     icon: DollarSign,
     color: "#10B981",
     href: "/admin/reservations",
+  }, {
+    name: "avis",
+    icon: DollarSign,
+    color: "#10B981",
+    href: "/admin/avis",
   },
 ];
 
