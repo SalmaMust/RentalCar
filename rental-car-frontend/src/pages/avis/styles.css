@@ -1,0 +1,14 @@
+/* styles.css ou un fichier CSS approprié */
+.table-container {
+    margin: 20px; /* Ajoute un margin autour du tableau */
+    text-align: center; /* Centre le contenu */
+}
+
+.table-title {
+    margin-bottom: 20px; /* Espace entre le titre et le tableau */
+    font-size: 24px; /* Taille du titre */
+    font-weight: bold; /* Gras */
+}
+.table-header-center {
+    text-align: center; /* Centre le texte */
+}
