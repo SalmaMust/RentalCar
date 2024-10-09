@@ -27,6 +27,7 @@ import AddModele from "@/pages/modeleVoiture/addModele";
 import ListModele from "@/pages/modeleVoiture/listModele";
 import ListMaison from "@/pages/maisonVoiture/listMaison";
 import EditVoiture from "@/pages/Voiture/editVoiture";
+import AvisList from "@/pages/avis/avislist";
 
 export const router = createBrowserRouter([
   {
@@ -132,6 +133,11 @@ export const router = createBrowserRouter([
             element: <AjouterContrat />
           }
         ]
+      },
+      {
+        path: "avis",
+        element: <AvisList />,
+       
       },
       {
         path: "reservations",
