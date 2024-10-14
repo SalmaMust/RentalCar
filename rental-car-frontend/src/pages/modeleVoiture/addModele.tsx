@@ -23,7 +23,7 @@ const AddModele= () => {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    brand: "", // Assuming single select, you can change this to an array for multi-select
+    brand: "", 
     image: null as File | null,
   });
   const [brands, setBrands] = useState<Brand[]>([]);
@@ -33,13 +33,13 @@ const AddModele= () => {
     const fetchBrands = async () => {
       try {
         const token = localStorage.getItem("authToken");
-        const response = await axios.get("http://localhost:4000/brands", {
+        const response = await axios.get("http://localhost:4000/brand", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        
         console.log(response.data);  
+
     setBrands(response.data.data);  
       } catch  {
         setErrorMessage("Erreur lors de la récupération des marques.");
