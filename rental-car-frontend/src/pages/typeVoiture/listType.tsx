@@ -1,6 +1,14 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Button } from "@/components/ui/button"; 
+import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import AddTypeDialog from "./addType";
 import EditTypeDialog from "./editType";
 
@@ -41,44 +49,67 @@ const ListType = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      setTypes(types.filter(type => type._id !== id)); 
+      setTypes(types.filter((type) => type._id !== id));
     } catch {
       setErrorMessage("Erreur lors de la suppression du type");
     }
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Liste des Types</h1>
-
-      <AddTypeDialog  />
-
-      {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-      <table className="w-full text-left table-auto">
-        <thead>
-          <tr>
-            <th>Nom</th>
-            <th>Description</th>
-            <th>Image</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {types.map(type => (
-            <tr key={type._id}>
-              <td>{type.name}</td>
-              <td>{type.description}</td>
-              <td>
-                {type.image && <img src={`http://localhost:4000/${type.image}`} alt={type.name} className="w-20 h-20 object-cover" />}
-              </td>
-              <td>
-                <EditTypeDialog id={type._id} />
-                <Button onClick={() => handleDelete(type._id)} className="ml-2 bg-red-500 text-white">Supprimer</Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div>
+      <h2 className="text-center text-xl font-semibold mt-6">Liste des Types</h2>
+      {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+      <div className="row">
+        <AddTypeDialog />
+      </div>
+      <br />
+      <div className="row">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Nom</TableHead>
+              <TableHead>Description</TableHead>
+              <TableHead className="text-center">Image</TableHead>
+              <TableHead className="text-center">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {types.length > 0 ? (
+              types.map((type) => (
+                <TableRow key={type._id}>
+                  <TableCell className="font-medium">{type.name}</TableCell>
+                  <TableCell>{type.description}</TableCell>
+                  <TableCell className="text-center">
+                    {type.image && (
+                      <img
+                        src={`http://localhost:4000/${type.image}`}
+                        alt={type.name}
+                        className="w-20 h-20 object-cover"
+                      />
+                    )}
+                  </TableCell>
+                  <TableCell className="text-center">
+                    <EditTypeDialog id={type._id} />
+                    <Button
+                      variant="destructive"
+                      className="ml-2"
+                      onClick={() => handleDelete(type._id)}
+                    >
+                      Supprimer
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={4} className="text-center">
+                  Aucun type trouvé
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 };

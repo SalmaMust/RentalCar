@@ -1,6 +1,14 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import AddModele from "./addModele";
 import EditModele from "./editModele";
 
@@ -12,7 +20,7 @@ interface Model {
   brand: {
     _id: string;
     name: string;
-  }| null;  
+  } | null;
 }
 
 const ListModele = () => {
@@ -52,45 +60,61 @@ const ListModele = () => {
 
   return (
     <div>
-      <h2>Liste des Modèles</h2>
-      <AddModele />
-      {error && <p>{error}</p>}
-      <table>
-        <thead>
-          <tr>
-            <th>Nom</th>
-            <th>Description</th>
-            <th>Marque</th>
-            <th>Image</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {models.map((model) => (
-            <tr key={model._id}>
-              <td>{model.name}</td>
-              <td>{model.description}</td>
-
-              {model.brand ? model.brand.name : "Aucun type disponible"}
-
-
-              <td>
-                <img
-                  src={`http://localhost:4000/${model.image}`}
-                  alt={model.name}
-                  width="50"
-                />
-              </td>
-              <td>
-                <Button onClick={() => handleDelete(model._id)}>
-                  Supprimer
-                </Button>
-                <EditModele id={model._id} />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <h2 className="text-center text-xl font-semibold mt-6">Liste des Modèles</h2>
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      <div className="row">
+        <AddModele />
+      </div>
+      <br />
+      <div className="row">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Nom</TableHead>
+              <TableHead>Description</TableHead>
+              <TableHead className="text-center">Marque</TableHead>
+              <TableHead className="text-center">Image</TableHead>
+              <TableHead className="text-center">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {models.length > 0 ? (
+              models.map((model) => (
+                <TableRow key={model._id}>
+                  <TableCell className="font-medium">{model.name}</TableCell>
+                  <TableCell>{model.description}</TableCell>
+                  <TableCell className="text-center">
+                    {model.brand ? model.brand.name : "Aucune marque disponible"}
+                  </TableCell>
+                  <TableCell className="text-center">
+                    <img
+                      src={`http://localhost:4000/${model.image}`}
+                      alt={model.name}
+                      width="50"
+                    />
+                  </TableCell>
+                  <TableCell className="text-center">
+                    <EditModele id={model._id} />
+                    <Button
+                      variant="destructive"
+                      style={{ marginLeft: "10px" }}
+                      onClick={() => handleDelete(model._id)}
+                    >
+                      Supprimer
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center">
+                  Aucun modèle trouvé
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 };
